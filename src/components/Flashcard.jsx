@@ -67,11 +67,6 @@ const Flashcard = () => {
       color: 'black',
       paddingTop: '20px',
     },
-    icon: {
-      width: '50px',
-      height: '50px',
-      marginBottom: '10px',
-    },
   };
 
   return (
@@ -94,6 +89,7 @@ const Flashcard = () => {
             style={styles.button}
             onMouseEnter={(e) => (e.currentTarget.style.transform = styles.buttonHover.transform)}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'none')}
+            onClick={() => navigate('/create-flashcard')} 
           >
             <img src={design} alt="Profile" style={styles.buttonImg} />
             <p style={styles.buttonP}>Create Them Yourself</p>

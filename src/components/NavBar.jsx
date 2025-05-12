@@ -4,8 +4,8 @@ import profile from './Images/profile.png';
 import tala from './Images/tala.ico';
 
 const NavBar = () => {
-    const [dropdownOpen, setDropdownOpen] = useState(false); // For profile dropdown
-    const [studyToolsOpen, setStudyToolsOpen] = useState(false); // For "Study Tools" dropdown
+    const [dropdownOpen, setDropdownOpen] = useState(false); 
+    const [studyToolsOpen, setStudyToolsOpen] = useState(false);
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
     const studyToolsRef = useRef(null);
@@ -23,7 +23,6 @@ const NavBar = () => {
         navigate('/login');
     };
 
-    // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

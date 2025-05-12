@@ -2,11 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import logo from './Images/logo.png';
 
-function Login() { 
+function Login({ setIsAuthenticated }) { 
     const navigate = useNavigate(); 
 
     const handleLoginClick = (e) => {
         e.preventDefault(); 
+        setIsAuthenticated(true); 
         navigate('/dashboard'); 
     };
 

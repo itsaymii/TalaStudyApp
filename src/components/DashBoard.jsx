@@ -1,252 +1,333 @@
-import React, { useState } from 'react';
-import Calendar from 'react-calendar';
+import React, { useState, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 
 function DashBoard() {
-    const [date, setDate] = useState(new Date());
+    const [tasks, setTasks] = useState(() => {
+        // Retrieve tasks from localStorage on initial load
+        const savedTasks = localStorage.getItem('tasks');
+        return savedTasks ? JSON.parse(savedTasks) : [];
+    });
+    const [showForm, setShowForm] = useState(false);
+    const [subject, setSubject] = useState('');
+    const [activityName, setActivityName] = useState('');
+    const [teacher, setTeacher] = useState('');
+    const [deadlineDate, setDeadlineDate] = useState('');
+    const [deadlineTime, setDeadlineTime] = useState('');
 
-    const styles = {
-        dashboardContainer: {
-            backgroundColor: 'white',
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '20px',
-            minHeight: '100vh',
-            width: '100vw',
-            boxSizing: 'border-box',
-        },
-        leftSection: {
-            flex: 1,
-            marginRight: '20px',
-        },
-        greetingSection: {
-            marginBottom: '20px',
-        },
-        greetingH1: {
-            fontSize: '40px',
-            margin: 0,
-            color: '#333',
-            marginTop: '100px',
-            marginLeft: '100px',
-        },
-        greetingP: {
-            fontSize: '18px',
-            margin: 0,
-            color: 'black',
-            marginTop: '20px',
-            marginLeft: '100px',
-        },
-        greetingSpan: {
-            color: '#6C21DC',
-        },
-        taskContainer: {
-            backgroundColor: '#D2B8ED',
-            padding: '15px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            marginTop: '40px',
-            marginLeft: '100px',
-            width: '500px',
-            height: '590px',
-        },
-        rightSection: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            gap: '20px',
-            marginRight: '600px',
-            marginTop: '80px',
-        },
-        pinkBox: {
-            backgroundColor: '#FFD5EA',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '500px',
-            height: '200px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            marginTop: '80px',
-            marginLeft: '60px',
-        },
-        subjectDetailsP: {
-            marginTop: '45px',
-            fontSize: '14px',
-            color: '#333',
-        },
-        statusP: {
-            position: 'absolute',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: 'black',
-            marginLeft: '380px',
-            marginTop: '-32px',
-        },
-        statusSpan: {
-            position: 'absolute',
-            fontSize: '14px',
-            paddingLeft: '10px',
-            fontWeight: 'bold',
-            color: 'red',
-        },
-        cards: {
-            display: 'flex',
-            gap: '50px',
-            marginLeft: '660px',
-            marginTop: '-260px',
-        },
-        card: {
-            padding: '20px',
-            borderRadius: '8px',
-            width: '150px',
-            height: '200px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            marginLeft: '20px',
-            color: '#333',
-        },
-        greenCard: {
-            backgroundColor: '#82e0aa',
-        },
-        yellowCard: {
-            backgroundColor: '#f9e79f',
-        },
+    useEffect(() => {
+        // Save tasks to localStorage whenever they change
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks]);
 
+    const addTask = () => {
+        if (subject && activityName && teacher && deadlineDate && deadlineTime) {
+            const newTask = { subject, activityName, teacher, deadlineDate, deadlineTime };
+            setTasks([...tasks, newTask]);
+            setSubject('');
+            setActivityName('');
+            setTeacher('');
+            setDeadlineDate('');
+            setDeadlineTime('');
+            setShowForm(false); 
+        } else {
+            alert('Please fill in all fields.');
+        }
+    };
 
-        additionalContainers: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: '60px',
-            gap: '20px',
-            marginLeft: '60px',
-        },
-        containerOne: {
-            backgroundColor: '#D2B8ED',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '500px',
-            height: '350px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        },
-        containerOneH3: {
-            marginTop: '10px',
-            marginBottom: '25px',
-            fontSize: '26px',
-            color: 'black',
-        },
-        subjectList: {
-            listStyleType: 'none',
-            padding: 0,
-            margin: 0,
-            gap: '5px',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-        },
-        subjectListLi: {
-            backgroundColor: '#eeeeee',
-            padding: '10px',
-            marginBottom: '8px',
-            borderRadius: '4px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            fontSize: '17px',
-            color: '#333',
-            textAlign: 'left',
-        },
-        containerTwo: {
-            backgroundColor: '#FFD5EA',
-            padding: '20px',
-            borderRadius: '8px',
-            width: '410px',
-            height: '350px',
-            marginLeft: '60px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        containerTwoP: {
-            position: 'absolute',
-            fontSize: '20px',
-            paddingBottom: '340px',
-            paddingTop: '10px',
-            fontWeight: 'bold',
-        },
-        reactCalendar: {
-            marginTop: '100px',
-            backgroundColor: '#FFD5EA',
-            fontWeight: 700,
-            width: '100%',
-            border: 'none',
-            fontFamily: 'Trebuchet MS',
-            fontSize: '14px',
-        },
+    const deleteTask = (index) => {
+        const updatedTasks = tasks.filter((_, i) => i !== index);
+        setTasks(updatedTasks);
     };
 
     return (
-        <div style={styles.dashboardContainer}>
-            <div style={styles.leftSection}>
-                <div style={styles.greetingSection}>
-                    <h1 style={styles.greetingH1}>
-                        Hi <span style={styles.greetingSpan}>Aimee</span>, Welcome to Tala
+        <>
+            <style>
+                {`
+                    .dashboard-container {
+                        background-color: #f7f9f9;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        padding: 20px;
+                        min-height: 100vh;
+                        width: 100vw;
+                        box-sizing: border-box;
+                        font-family: Arial, sans-serif;
+                    }
+                    .greeting-section {
+                        margin-bottom: 20px;
+                        margin-top: 130px;
+                        margin-left: 20px;
+                    }
+                    .greeting-h1 {
+                        font-size: 40px;
+                        margin: -30%;
+                        margin-top: 5px;
+                        color: #333;
+                        margin-left: 20px;
+                    }
+                    .greeting-p {
+                        position: relative;
+                        font-size: 18px;
+                        margin: -100%;
+                        color: black;
+                        margin-top: 240px;
+                        margin-left: 20px;
+                    }
+                    .greeting-span {
+                        color: #6C21DC;
+                    }
+                    .task-container {
+                        background: linear-gradient(135deg, #6C21DC, #21DC6C);
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        border-radius: 10px;
+                        padding: 20px;
+                        margin-top: 20px;
+                        width: 730px;
+                        height: 600px;
+                        margin-left: -720px;
+                        max-width: 800px;
+                        display: flex;
+                        flex-direction: column;
+                        color: white;
+                        margin-top: 280px;
+
+                    }
+                    .task-title {
+                        font-size: 24px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+                    .add-task-button {
+                        background-color: white;
+                        color: #6C21DC;
+                        border: none;
+                        width: 120px;
+                        margin-left: 540px;
+                        margin-top: -50px;
+                        border-radius: 20px;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease, color 0.3s ease;
+                        margin-bottom: 20px;
+                    }
+                    .add-task-button:hover {
+                        background-color: #6C21DC;
+                        color: white;
+                    }
+                    .form-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 1000;
+                    }
+                    .form-container {
+                        background-color: white;
+                        padding: 30px;
+                        height: 400px;
+                        width: 600px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                        max-width: 500px;
+                    }
+                    .form-container input {
+                        padding: 10px;
+                        width: 480px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 16px;
+                        margin-bottom: 10px;
+                        margin-top: 15px;
+                    }
+                    .form-container button {
+                        background-color: #6C21DC;
+                        color: white;
+                        border: none;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        border-radius: 29px;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+                    .form-container button:hover {
+                        background-color: #5a1ab8;
+                    }
+
+                    .task-list {
+                        height: 480px;
+                        border-radius: 10px;
+                        padding: 20px;
+                        margin-top: --10px;
+                        overflow-y: auto;
+                        max-height: 1000px;
+                    }
+                    .task-item {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background-color: #f9f9f9;
+                        color: #333;
+                        padding: 10px;
+                        border-radius: 5px;
+                        margin-bottom: 10px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+                    .delete-task-button {
+                        background-color: #ff4d4d;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        padding: 5px 10px;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+                    .delete-task-button:hover {
+                        background-color: #e60000;
+                    }
+
+                    .cards-container {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 20px;
+                        flex: 1;
+                        margin-top: 130px;
+                        margin-right: 20px;
+                        margin-left: 100px;
+                        margin-top: 160px;
+                    }
+                    .card {
+                        background-color: white;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        border-radius: 10px;
+                        padding: 20px;
+                        width: 250px;
+                        height: 150px;
+                        text-align: center;
+                        position: relative;
+                        margin-right: 20px;
+                    }
+                    .card:nth-child(1) {
+                        border-left: 5px solid #6C21DC; /* Purple */
+                    }
+                    .card:nth-child(2) {
+                        border-left: 5px solid #21DC6C; /* Green */
+                    }
+                    .card:nth-child(3) {
+                        border-left: 5px solid #DC6C21; /* Orange */
+                    }
+                    .card-title {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #333;
+                        margin-bottom: 10px;
+                        padding-top: 110px;
+                    }
+                    .card-description {
+                        font-size: 16px;
+                        color: #555;
+                    }
+                `}
+            </style>
+            <div className="dashboard-container">
+                <div className="greeting-section">
+                    <h1 className="greeting-h1">
+                        Hi <span className="greeting-span">Aimee</span>, Welcome to Tala
                     </h1>
-                    <p style={styles.greetingP}>
+                    <p className="greeting-p">
                         Your smart study buddy! Let’s make learning easier, faster, and more fun. Ready to get started?
                     </p>
                 </div>
-                <div style={styles.taskContainer}>
-                    <h2>Today's Task:</h2>
+
+                <div className="task-container">
+                    <h2 className="task-title">Today's Task</h2>
+                    <button
+                        className="add-task-button"
+                        onClick={() => setShowForm(true)}
+                    >
+                        Add Task
+                    </button>
+                    <div className="task-list">
+                        {tasks.map((task, index) => (
+                            <div key={index} className="task-item">
+                                <div>
+                                    <strong>Subject:</strong> {task.subject} <br />
+                                    <strong>Activity:</strong> {task.activityName} <br />
+                                    <strong>Teacher:</strong> {task.teacher} <br />
+                                    <strong>Deadline:</strong> {task.deadlineDate} at {task.deadlineTime}
+                                </div>
+                                <button
+                                    className="delete-task-button"
+                                    onClick={() => deleteTask(index)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="cards-container">
+                    <div className="card">
+                        <h3 className="card-title">No of Flashcards</h3>
+                    </div>
+                    <div className="card">
+                        <h3 className="card-title">Score</h3>
+                    </div>
+                    <div className="card">
+                        <h3 className="card-title">Hour</h3>
+                    </div>
                 </div>
             </div>
 
-            <div style={styles.rightSection}>
-                <div style={styles.pinkBox}>
-                    <div>
-                        <h1>Subject Code: PELEC202</h1>
-                        <p style={styles.subjectDetailsP}>
-                            <strong>Time:</strong> 10:00 AM - 12:00 PM
-                        </p>
-                        <p style={styles.subjectDetailsP}>
-                            <strong>Professor:</strong> Sir. John Rovie Balingbing
-                        </p>
-                    </div>
-                    <div>
-                        <p style={styles.statusP}>
-                            Status: <span style={styles.statusSpan}>Ongoing</span>
-                        </p>
-                    </div>
-                </div>
-                <div style={styles.cards}>
-                    <div style={{ ...styles.card, ...styles.greenCard }}>
-                        <h1>38</h1>
-                        <p style={{marginTop:"170px", textAlign:"center", position:"absolute"}}>Scores</p>
-                    </div>
-                    <div style={{ ...styles.card, ...styles.yellowCard }}>
-                        <h1>8</h1>
-                        <p style={{marginTop:"170px", textAlign:"center", position:"absolute"}}>Hours</p>
-                    </div>
-                </div>
-                <div style={styles.additionalContainers}>
-                    <div style={styles.containerOne}>
-                        <h3 style={styles.containerOneH3}>Progress</h3>
-                        <ul style={styles.subjectList}>
-                            <li style={styles.subjectListLi}>PELEC 202</li>
-                            <li style={styles.subjectListLi}>ITCS 205</li>
-                            <li style={styles.subjectListLi}>PELEC 203</li>
-                            <li style={styles.subjectListLi}>ITPS 206</li>
-                            <li style={styles.subjectListLi}>PATHFIT 4</li>
-                        </ul>
-                    </div>
-                    <div style={styles.containerTwo}>
-                        <p style={styles.containerTwoP}>My Schedule</p>
-                        <Calendar onChange={setDate} value={date} style={styles.reactCalendar} />
+            {showForm && (
+                <div className="form-overlay">
+                    <div className="form-container">
+                        <input
+                            type="text"
+                            placeholder="Subject Name"
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Name of the Activity"
+                            value={activityName}
+                            onChange={(e) => setActivityName(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Teacher"
+                            value={teacher}
+                            onChange={(e) => setTeacher(e.target.value)}
+                        />
+                        <input
+                            type="date"
+                            placeholder="Deadline Date"
+                            value={deadlineDate}
+                            onChange={(e) => setDeadlineDate(e.target.value)}
+                        />
+                        <input
+                            type="time"
+                            placeholder="Deadline Time"
+                            value={deadlineTime}
+                            onChange={(e) => setDeadlineTime(e.target.value)}
+                        />
+                        <button onClick={addTask}>Submit Task</button>
+                        <button onClick={() => setShowForm(false)}>Cancel</button>
                     </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 }
 
