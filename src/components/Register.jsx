@@ -38,6 +38,7 @@ const Register = () => {
         },
         input: {
             display: 'block',
+            backgroundColor: 'white',
             width: '100%',
             padding: '10px',
             margin: '10px 0',
@@ -130,8 +131,17 @@ const Register = () => {
                             I accept Terms, Services, and Policy
                         </label>
                     </div>
-                    <button type="submit" style={styles.input} onClick={handleRegisterClick}>Register</button>
-                </form>
+                <button 
+                    type="submit" 
+                    style={{ 
+                        ...styles.input, 
+                        backgroundColor: '#6C21DC', 
+                        color: 'white' 
+                    }} 
+                    onClick={handleRegisterClick}
+                >
+                    Register
+                </button>                </form>
             </div>
         </div>
     );

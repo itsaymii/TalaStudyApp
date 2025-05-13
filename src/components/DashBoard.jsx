@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+
 import 'react-calendar/dist/Calendar.css';
 
 function DashBoard() {
     const [tasks, setTasks] = useState(() => {
-        // Retrieve tasks from localStorage on initial load
         const savedTasks = localStorage.getItem('tasks');
         return savedTasks ? JSON.parse(savedTasks) : [];
     });
+
+    const [flashcards, setFlashcards] = useState(() => {
+        const savedFlashcards = localStorage.getItem('flashcards');
+        return savedFlashcards ? JSON.parse(savedFlashcards) : [];
+    });
+
+        const navigate = useNavigate(); 
+
+
     const [showForm, setShowForm] = useState(false);
     const [subject, setSubject] = useState('');
     const [activityName, setActivityName] = useState('');
@@ -15,9 +25,12 @@ function DashBoard() {
     const [deadlineTime, setDeadlineTime] = useState('');
 
     useEffect(() => {
-        // Save tasks to localStorage whenever they change
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
+
+    useEffect(() => {
+        localStorage.setItem('flashcards', JSON.stringify(flashcards));
+    }, [flashcards]);
 
     const addTask = () => {
         if (subject && activityName && teacher && deadlineDate && deadlineTime) {
@@ -28,7 +41,7 @@ function DashBoard() {
             setTeacher('');
             setDeadlineDate('');
             setDeadlineTime('');
-            setShowForm(false); 
+            setShowForm(false);
         } else {
             alert('Please fill in all fields.');
         }
@@ -37,6 +50,12 @@ function DashBoard() {
     const deleteTask = (index) => {
         const updatedTasks = tasks.filter((_, i) => i !== index);
         setTasks(updatedTasks);
+    };
+
+    const deleteFlashcard = (index) => {
+        const updatedFlashcards = flashcards.filter((_, i) => i !== index);
+        setFlashcards(updatedFlashcards);
+        localStorage.setItem('flashcards', JSON.stringify(updatedFlashcards));
     };
 
     return (
@@ -217,24 +236,111 @@ function DashBoard() {
                         margin-right: 20px;
                     }
                     .card:nth-child(1) {
-                        border-left: 5px solid #6C21DC; /* Purple */
+                        border-left: 5px solid #6C21DC; 
                     }
                     .card:nth-child(2) {
-                        border-left: 5px solid #21DC6C; /* Green */
+                        border-left: 5px solid #21DC6C; 
                     }
                     .card:nth-child(3) {
-                        border-left: 5px solid #DC6C21; /* Orange */
+                        border-left: 5px solid #DC6C21; 
                     }
                     .card-title {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         font-size: 16px;
                         font-weight: bold;
                         color: #333;
-                        margin-bottom: 10px;
                         padding-top: 110px;
+                        text-align: center;
+                        margin-bottom: 10px;
                     }
+
                     .card-description {
+                        font-size: 44px;
+                        font-weight: bold;
+                        color: #6C21DC;
+                        margin-top: -120px;
+                    }
+
+                    .extra-containers {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 40px;
+                        gap: 60px;
+                        height: 500px;
+                        width: 960px;
+                        margin-left: 870px;
+                        margin-top: 420px;
+                        position: absolute;
+                    }
+                    .extra-container {
+                        flex: 1;
+                        background-color: white;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+                        text-align: center;
+                    }
+                    .extra-container-1 {
+                        border-left: 5px solid #6C21DC; /* Purple */
+                        color: white;
+                    }
+
+                    .extra-container-2 {
+                        border-left: 5px solid #DC6C21; /* Orange */
+                        color: white;
+        }
+                    .extra-container-title {
+                        font-size: 20px;
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                        color: #333;
+                    }
+                    .extra-container-description {
                         font-size: 16px;
-                        color: #555;
+                    }
+
+                    .flashcard-list {
+                        list-style: none;
+                        padding: 0;
+                        margin: 0;
+                        margin-top: 40px;
+                    }
+
+                    .flashcard-item {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background-color: white ;
+                        padding: 10px 20px;
+                        border-radius: 10px;
+                        color: #333;
+                        border-left: 5px solid #e74c3c; 
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+
+                    .flashcard-item:hover {
+                        background-color: #e0e0e0;
+                    }
+
+                    .delete-flashcard-button {
+                        background-color: #ff4d4d;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        padding: 5px 10px;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+
+                    .delete-flashcard-button:hover {
+                        background-color: #e60000;
                     }
                 `}
             </style>
@@ -279,6 +385,7 @@ function DashBoard() {
                 <div className="cards-container">
                     <div className="card">
                         <h3 className="card-title">No of Flashcards</h3>
+                        <p className="card-description">{flashcards.length}</p>
                     </div>
                     <div className="card">
                         <h3 className="card-title">Score</h3>
@@ -287,6 +394,44 @@ function DashBoard() {
                         <h3 className="card-title">Hour</h3>
                     </div>
                 </div>
+                    <div className="extra-containers">
+                    <div className="extra-container extra-container-1">
+                        <h3 className="extra-container-title">Flashcards</h3>
+                        {flashcards.length > 0 ? (
+                            <ul className="flashcard-list">
+                                {flashcards.map((flashcard, index) => (
+                                    <li
+                                        key={index}
+                                        className="flashcard-item"
+                                        onClick={() =>
+                                            navigate('/flashcard-view', {
+                                                state: { title: flashcard.title, flashcards: flashcard.flashcards },
+                                            })
+                                        }
+                                    >
+                                        <span>{flashcard.title}</span>
+                                        <button
+                                            className="delete-flashcard-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); 
+                                                deleteFlashcard(index);
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No flashcards available.</p>
+                        )}
+                    </div>
+                        <div className="extra-container extra-container-2">
+                            <h3 className="extra-container-title">Quizzes</h3>
+                            <p className="extra-container-description">This is the quizzes container.</p>
+                        </div>
+                    </div>
+        
             </div>
 
             {showForm && (

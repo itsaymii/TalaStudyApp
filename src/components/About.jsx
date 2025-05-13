@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import meeting from './Images/meeting.png'; 
 import flashcards from './Images/flashcards.png'; 
 
 const About = () => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const styles = {
         container: {
             display: 'flex',
@@ -17,32 +25,34 @@ const About = () => {
         },
         section: {
             display: 'flex',
+            flexDirection: isMobile ? 'column-reverse' : 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '40px',
+            padding: isMobile ? '20px' : '40px',
             gap: '30px',
             margin: '20px 0',
             width: '90%',
             maxWidth: '1200px',
             borderRadius: '10px',
+            textAlign: isMobile ? 'center' : 'left',
         },
         image: {
-            width: '320px',
-            height: '290px',
+            width: isMobile ? '100%' : '320px',
+            height: isMobile ? 'auto' : '290px',
             objectFit: 'cover',
             borderRadius: '10px',
         },
         textContainer: {
             flex: 1,
-            padding: '20px',
+            padding: isMobile ? '10px' : '20px',
         },
         title: {
-            fontSize: '24px',
+            fontSize: isMobile ? '20px' : '24px',
             fontWeight: 'bold',
             marginBottom: '15px',
         },
         description: {
-            fontSize: '18px',
+            fontSize: isMobile ? '16px' : '18px',
             lineHeight: '1.6',
             marginBottom: '20px',
         },
@@ -66,13 +76,13 @@ const About = () => {
             maxWidth: '1200px',
         },
         teamTitle: {
-            fontSize: '28px',
+            fontSize: isMobile ? '24px' : '28px',
             fontWeight: 'bold',
             marginBottom: '30px',
         },
         profiles: {
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gridTemplateColumns: isMobile ? 'repeat(auto-fit, minmax(120px, 1fr))' : 'repeat(auto-fit, minmax(150px, 1fr))',
             gap: '20px',
         },
         profile: {
@@ -87,7 +97,7 @@ const About = () => {
             borderRadius: '50%',
             objectFit: 'cover',
             marginBottom: '10px',
-            backgroundColor: '#ddd', // Placeholder background
+            backgroundColor: '#ddd',
         },
         profileName: {
             fontSize: '16px',
@@ -141,7 +151,6 @@ const About = () => {
                 </div>
             </div>
 
-            {/* Our Team Section */}
             <div style={styles.teamContainer}>
                 <h2 style={styles.teamTitle}>Our Team</h2>
                 <div style={styles.profiles}>

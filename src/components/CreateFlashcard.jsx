@@ -1,14 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CreateFlashcard = () => {
   const [title, setTitle] = useState('');
   const [flashcards, setFlashcards] = useState([{ term: '', description: '' }]);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!title.trim()) {
+      alert('Please provide a title for the flashcard set.');
+      return;
+    }
+
+    if (flashcards.length !== 10) {
+      alert('You must have exactly 10 flashcards.');
+      return;
+    }
+
+    for (const flashcard of flashcards) {
+      if (!flashcard.term.trim() || !flashcard.description.trim()) {
+        alert('Please fill in all terms and descriptions.');
+        return;
+      }
+    }
+
     console.log('Flashcard Set Created:', { title, flashcards });
-    setTitle('');
-    setFlashcards([{ term: '', description: '' }]);
+    navigate('/flashcard-view', { state: { title, flashcards } });
   };
 
   const handleFlashcardChange = (index, field, value) => {
@@ -34,14 +53,13 @@ const CreateFlashcard = () => {
     <div className="create-flashcard-container">
       <style>
         {`
-
-        h1 {
-          text-align: center;   
+          h1 {
+            text-align: center;   
             font-size: 36px;
             color: #6C21DC;
             margin-top: 100px;
             margin-bottom: 80px;
-        }
+          }
         
           .create-flashcard-container {
             text-align: center;
@@ -57,7 +75,11 @@ const CreateFlashcard = () => {
 
           .form-group {
             margin-bottom: 20px;
-            width: 550px;
+            width: 570px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           }
 
           .form-label {
@@ -66,24 +88,27 @@ const CreateFlashcard = () => {
             font-weight: bold;
           }
 
-          .form-input, .form-textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
+          .form-input {
+            width: 540px;
+            padding: 15px; 
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px; 
           }
 
           .form-textarea {
+            width: 540px;
+            padding: 15px; 
+            border-radius: 5px;
+            font-size: 15px; 
             resize: none;
-            height: 60px;
+            height: 100px; 
           }
 
           .flashcard-item {
             margin-bottom: 20px;
-            border: 1px solid #ccc;
             padding: 10px;
             border-radius: 5px;
+            background-color: white;
           }
 
           .remove-button {

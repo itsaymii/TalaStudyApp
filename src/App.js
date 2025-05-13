@@ -8,6 +8,8 @@ import About from './components/About';
 import Flashcard from './components/Flashcard';
 import UploadPage from './components/UploadPage';
 import CreateFlashcard from './components/CreateFlashcard';
+import FlashcardView from './components/FlashcardView';
+
 import '@fontsource/raleway';
 
 function AppContent() {
@@ -35,6 +37,8 @@ function AppContent() {
         <Route path="/flashcard" element={<Flashcard />} />
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/create-flashcard" element={<CreateFlashcard />} />
+        <Route path="/flashcard-view" element={<FlashcardView />} />
+
 
       </Routes>
     </>
